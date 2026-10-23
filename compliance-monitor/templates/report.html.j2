@@ -1,0 +1,167 @@
+{#
+HTML version of report.md.j2; the attachments are grouped by subject and standard (see _group_attachments)
+-#}
+{% set scopes = {'scs-0501': 'SCS-compatible IaaS', 'scs-0502': 'SCS-compatible KaaS'} -%}
+{% set standards = {
+  'scs-0100': 'Flavor naming',
+  'scs-0101': 'Entropy',
+  'scs-0102': 'Image metadata',
+  'scs-0103': 'Standard flavors',
+  'scs-0104': 'Standard images',
+  'scs-0114': 'Volume types',
+  'scs-0115': 'Default security groups',
+  'scs-0116': 'Key manager',
+  'scs-0117': 'Volume backup',
+  'scs-0123': 'Mandatory and supported IaaS services',
+} -%}
+{% set labels = {'pass': 'pass', 'fail': 'fail', 'dnf': 'did not finish', 'miss': 'missing'} -%}
+{% set badges = {'pass': 'ok', 'fail': 'fail'} -%}
+{% set uuid = report.uuid -%}
+{% set attachments = report.attachments.values() | selectattr('_groups') | list if report.attachments else [] -%}
+{% set count = namespace(subjects=0, n=0, passing=0, standards=[]) -%}
+{% for attachment in attachments %}{% for groups in attachment._groups.values() %}
+  {%- set count.subjects = count.subjects + 1 %}
+  {%- for standard, results in groups.items() %}
+    {%- if standard and standard not in count.standards %}{% set count.standards = count.standards + [standard] %}{% endif %}
+    {%- set count.n = count.n + results | length %}
+    {%- set count.passing = count.passing + results | selectattr('predicate', 'equalto', 'pass') | list | length %}
+  {%- endfor %}
+{%- endfor %}{% endfor -%}
+{% macro verdict(a0, groups) -%}
+{% set predicates = groups.values() | sum(start=[]) | map(attribute='predicate') | unique | list -%}
+{% set predicate = 'fail' if 'fail' in predicates else 'pass' if predicates == ['pass'] else 'miss' -%}
+<span class="badge {{ badges.get(predicate, 'na') }}">{{ a0.object.rsplit('-', 1)[-1] if predicate == 'pass' else '–' }}</span>
+{%- endmacro -%}
+<div class="hero"><div class="inner">
+  <a class="back" href="{{ base_url }}page/table">← Compliance overview</a>
+  {%- if attachments | length == 1 %}
+  {%- set a0 = attachments[0]._attestation %}
+  <p class="eyebrow">{{ scopes.get(a0.object.rsplit('-', 1)[0], a0.object) }}</p>
+  <h1>Details for {{ a0.subject }}</h1>
+  {%- else %}
+  <h1>{{ title }}</h1>
+  {%- endif %}
+  <p class="snapshot">{{ title }} · <a href="{{ report_url(uuid, download=True) }}">download</a></p>
+  <div class="jump">
+  {%- for attachment in attachments %}{% for subject, groups in attachment._groups.items() %}
+    <a href="#{{ attachment._attestation.guid }}-{{ subject }}">{{ subject }} {{ verdict(attachment._attestation, groups) }}</a>
+  {%- endfor %}{% endfor %}
+  </div>
+</div></div>
+<main class="inner">
+  <div class="stats">
+    <div class="stat"><div class="n">{{ count.subjects }}</div><div class="l">Environments</div></div>
+    <div class="stat"><div class="n">{{ count.passing }} <small>/ {{ count.n }} passing</small></div><div class="l">Test results</div></div>
+    <div class="stat"><div class="n">{{ count.standards | length }}</div><div class="l">SCS standards tested</div></div>
+  </div>
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="Filter tests by id or standard…" aria-label="Filter tests">
+    <div class="legend">
+      <span class="badge ok">pass</span>
+      <span class="badge fail">fail</span>
+      <span class="badge na">did not finish / missing</span>
+    </div>
+  </div>
+{%- for attachment in attachments %}
+{%- set a0 = attachment._attestation %}
+{%- for subject, groups in attachment._groups.items() %}
+<section id="{{ a0.guid }}-{{ subject }}">
+  <div class="env-head">
+    <h2>{{ subject }}: {{ scopes.get(a0.object.rsplit('-', 1)[0], a0.object) }}</h2>
+    <div class="env-meta">{{ verdict(a0, groups) }}<a class="ghost" href="https://docs.scs.community/standards/scopes/{{ a0.object.rsplit('-', 1)[0] }}">Spec overview</a></div>
+  </div>
+  {%- for standard, results in groups.items() %}
+  {%- set passing = results | selectattr('predicate', 'equalto', 'pass') | list | length %}
+  <details class="std"{% if passing != results | length %} open{% endif %}>
+    <summary><span class="std-id">{{ standard | upper or 'Tests' }}</span><span>{{ standards.get(standard, standard or 'Further test cases') }}</span>
+      <span class="std-count">{{ passing }} / {{ results | length }} passing</span>
+      {%- if standard in standards %}<a class="std-link" href="https://docs.scs.community/standards/iaas/{{ standard }}/">Standard</a>{% endif %}</summary>
+    <table>
+      <thead><tr><th>Test case</th><th>Result</th><th>Description</th></tr></thead>
+      <tbody>
+      {%- for a in results %}
+        <tr id="{{ a.guid }}">
+          <td class="tid" data-label="Test case">
+            {%- if a.object in testcases %}<a href="{{ testcases[a.object].url }}">{{ a.object }}</a>
+            {%- else %}{{ a.object }}{% endif %}</td>
+          <td data-label="Result"><span class="badge {{ badges.get(a.predicate, 'na') }}">{{ labels.get(a.predicate, a.predicate) }}</span>
+            {%- if a.report %}<a class="date" href="{{ report_url(a.report, a.guid) }}" title="{{ a.report }} {{ a.timestamp }}">{{ a.timestamp | short_isodate }}</a>
+            {%- elif a.timestamp %}<a class="date" href="#log-{{ a.guid }}" title="{{ a.timestamp }}">{{ a.timestamp | short_isodate }}</a>{% endif %}</td>
+          <td data-label="Description">{{ testcases[a.object].description | markdown if a.object in testcases }}</td>
+        </tr>
+      {%- endfor %}
+      </tbody>
+    </table>
+  </details>
+  {%- endfor %}
+</section>
+{%- endfor %}
+{%- else %}
+<section>
+  <h2>Attestations</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>Subject/object</th><th>Result</th><th>GUID</th></tr></thead>
+      <tbody>
+      {%- for a in report.attestations %}
+        <tr id="{{ a.guid }}">
+          <td class="tid" data-label="Subject/object">{{ a.subject }}/{{ a.object }}</td>
+          <td data-label="Result"><span class="badge {{ badges.get(a.predicate, 'na') }}">{{ labels.get(a.predicate, a.predicate) }}</span></td>
+          <td class="tid" data-label="GUID">{{ a.guid }}</td>
+        </tr>
+      {%- endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{%- endfor %}
+
+{% if report.log -%}
+<section>
+  <h2 id="log">Log</h2>
+  <details class="std">
+    <summary><span class="std-id">Log</span><span>{{ report.log | length }} lines</span></summary>
+    <ul class="log">
+    {%- for line in report.log %}
+      {%- if line.split(':', 1)[0].lower() in ('warning', 'error', 'critical') %}
+      <li class="attention highlight">
+      {%- elif line.startswith('INFO: *** ') %}
+      <li id="log-{{ line.split()[-1][1:-1] }}"{% if 'PASS' not in line %} class="attention"{% endif %}>
+      {%- else %}
+      <li>
+      {%- endif %}{{ line | e }}</li>
+    {%- endfor %}
+    </ul>
+  </details>
+  {%- if report.unredacted %}
+  <p><a class="ghost" href="{{ report_url(uuid, full=True) }}">Show unredacted log (requires login) 🔒</a></p>
+  {%- endif %}
+</section>
+{%- endif %}
+</main>
+<script>
+  (function () {
+    // open the card the URL fragment points into
+    function reveal() {
+      var el = location.hash && document.getElementById(location.hash.slice(1));
+      if (el && el.closest('details')) { el.closest('details').open = true; el.scrollIntoView(); }
+    }
+    window.addEventListener('hashchange', reveal);
+    reveal();
+    var q = document.getElementById('q');
+    q.addEventListener('input', function () {
+      var term = q.value.trim().toLowerCase();
+      document.querySelectorAll('section[id] details.std').forEach(function (d) {
+        var shown = 0;
+        d.querySelectorAll('tbody tr').forEach(function (tr) {
+          var hit = !term || d.querySelector('summary').textContent.toLowerCase().indexOf(term) !== -1
+            || tr.textContent.toLowerCase().indexOf(term) !== -1;
+          tr.classList.toggle('hidden', !hit);
+          if (hit) shown++;
+        });
+        d.classList.toggle('hidden', shown === 0);
+        if (term && shown) d.open = true;
+      });
+    });
+  })();
+</script>

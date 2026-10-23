@@ -1,0 +1,299 @@
+# documentation links and descriptions of the test cases, shown on the report page (see report.html.j2);
+# taken from the scope definitions as published by the previous version of the monitor
+availability-zones-check:
+  url: https://docs.scs.community/standards/scs-0121-w1-Availability-Zones-Standard#required-documentation
+  description: "Manual check: Must fulfill documentation requirements of scs-0121-v1."
+cncf-k8s-conformance:
+  url: https://docs.scs.community/standards/scs-0201-v1-cncf-conformance#regulations
+  description: "Must fulfill all requirements of scs-0201-v1 (CNCF Kubernetes conformance)."
+domain-manager-check:
+  url: https://docs.scs.community/standards/scs-0302-v1-domain-manager-role#conformance-tests
+  description: "Manual check: Must fulfill all requirements of scs-0302-v1."
+kaas-networking-check:
+  url: https://docs.scs.community/standards/scs-0219-w1-kaas-networking#automated-tests
+  description: "Must pass all testcases of upstream CNCF Kubernetes e2e-suite focus 'NetworkPolicy'."
+key-manager-docs-check:
+  url: https://docs.scs.community/standards/scs-0116-w1-key-manager-implementation-testing#manual-tests
+  description: "Manual check: Must fulfill documentation requirements of scs-0116-v1."
+node-distribution-check:
+  url: https://docs.scs.community/standards/scs-0214-v2-k8s-node-distribution#decision
+  description: "Manual check: Must fulfill all requirements of scs-0214-v2."
+scs-0100-semantics-check:
+  url: https://docs.scs.community/standards/scs-0100-w1-flavor-naming-implementation-testing#automated-tests
+  description: "Syntactically correct SCS flavor names represent the truth."
+scs-0100-syntax-check:
+  url: https://docs.scs.community/standards/scs-0100-w1-flavor-naming-implementation-testing#automated-tests
+  description: "Flavor names starting `SCS-` comply with syntax."
+scs-0101-entropy-avail:
+  url: https://docs.scs.community/standards/scs-0101-w1-entropy-implementation-testing#automated-tests
+  description: "Ensures that `entropy_avail` is 256 on a sample VM."
+scs-0101-fips-test:
+  url: https://docs.scs.community/standards/scs-0101-w1-entropy-implementation-testing#automated-tests
+  description: "Ensures that the \"FIPS test\" is passed on a sample VM."
+scs-0101-flavor-property:
+  url: https://docs.scs.community/standards/scs-0101-w1-entropy-implementation-testing#automated-tests
+  description: "Ensures that each flavor has the extra spec `hw_rng:allowed=True`."
+scs-0101-image-property:
+  url: https://docs.scs.community/standards/scs-0101-w1-entropy-implementation-testing#automated-tests
+  description: "Ensures that each public image has the property `hw_rng_model:virtio`."
+scs-0101-rngd:
+  url: https://docs.scs.community/standards/scs-0101-w1-entropy-implementation-testing#automated-tests
+  description: "Ensures that the service `rngd` is present on a sample VM."
+scs-0102-image-recency:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image is as recent as properties (if set) suggest."
+scs-0102-os_purpose-uniqueness:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Generic OS images are uniquely identified via triple (architecture, os\\_distro, os\\_version)."
+scs-0102-prop-architecture:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `architecture`."
+scs-0102-prop-hash_algo:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `hash_algo`."
+scs-0102-prop-hotfix_hours:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `hotfix_hours`."
+scs-0102-prop-hw_disk_bus:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `hw_disk_bus`."
+scs-0102-prop-hw_rng_model:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `hw_rng_model`."
+scs-0102-prop-hypervisor_type:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `hypervisor_type`."
+scs-0102-prop-image_build_date:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `image_build_date`."
+scs-0102-prop-image_description:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `image_description`."
+scs-0102-prop-image_original_user:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `image_original_user`."
+scs-0102-prop-image_source:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `image_source`."
+scs-0102-prop-min_disk:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `min_disk`."
+scs-0102-prop-min_ram:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `min_ram`."
+scs-0102-prop-os_distro:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `os_distro`."
+scs-0102-prop-os_purpose:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `os_purpose`."
+scs-0102-prop-os_version:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `os_version`."
+scs-0102-prop-provided_until:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `provided_until`."
+scs-0102-prop-replace_frequency:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `replace_frequency`."
+scs-0102-prop-uuid_validity:
+  url: https://docs.scs.community/standards/scs-0102-w1-image-metadata-implementation-testing#automated-tests
+  description: "Each image has a meaningful value for `uuid_validity`."
+scs-0103-flavor-16v-128:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-16V-128`."
+scs-0103-flavor-16v-32:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-16V-32`."
+scs-0103-flavor-16v-32-100:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-16V-32-100`."
+scs-0103-flavor-16v-64:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-16V-64`."
+scs-0103-flavor-1l-1:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-1L-1`."
+scs-0103-flavor-1l-1-5:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-1L-1-5`."
+scs-0103-flavor-1v-2:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-1V-2`."
+scs-0103-flavor-1v-2-5:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-1V-2-5`."
+scs-0103-flavor-1v-4:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-1V-4`."
+scs-0103-flavor-1v-4-10:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-1V-4-10`."
+scs-0103-flavor-1v-8:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-1V-8`."
+scs-0103-flavor-1v-8-20:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-1V-8-20`."
+scs-0103-flavor-2v-16:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-2V-16`."
+scs-0103-flavor-2v-16-50:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-2V-16-50`."
+scs-0103-flavor-2v-4:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-2V-4`."
+scs-0103-flavor-2v-4-10:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-2V-4-10`."
+scs-0103-flavor-2v-4-20s:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-2V-4-20s`."
+scs-0103-flavor-2v-8:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-2V-8`."
+scs-0103-flavor-2v-8-20:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-2V-8-20`."
+scs-0103-flavor-4v-16:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-4V-16`."
+scs-0103-flavor-4v-16-100s:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-4V-16-100s`."
+scs-0103-flavor-4v-16-50:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-4V-16-50`."
+scs-0103-flavor-4v-32:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-4V-32`."
+scs-0103-flavor-4v-32-100:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-4V-32-100`."
+scs-0103-flavor-4v-8:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-4V-8`."
+scs-0103-flavor-4v-8-20:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-4V-8-20`."
+scs-0103-flavor-8v-16:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-8V-16`."
+scs-0103-flavor-8v-16-50:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-8V-16-50`."
+scs-0103-flavor-8v-32:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-8V-32`."
+scs-0103-flavor-8v-32-100:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-8V-32-100`."
+scs-0103-flavor-8v-64:
+  url: https://docs.scs.community/standards/scs-0103-w1-standard-flavors-implementation#automated-tests
+  description: "Check presence of flavor `SCS-8V-64`."
+scs-0104-image-capi-1:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "CAPI image is present (naming scheme v1)."
+scs-0104-image-capi-2:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "CAPI image is present (naming scheme v2)."
+scs-0104-image-debian-12:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Debian 12 image is present (by name)."
+scs-0104-image-debian-13:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Debian 13 image is present (by name)."
+scs-0104-image-ubuntu-2204:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Ubuntu 22.04 image is present (by name)."
+scs-0104-image-ubuntu-2404:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Ubuntu 24.04 image is present (by name)."
+scs-0104-image-ubuntu-latest:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Current Ubuntu LTS image is present."
+scs-0104-source-capi:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "CAPI images adhere to canonical image source, os_purpose and image_description."
+scs-0104-source-capi-1:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "CAPI images adhere to canonical image source."
+scs-0104-source-capi-2:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "CAPI images adhere to canonical image source."
+scs-0104-source-debian:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Debian images adhere to canonical image source."
+scs-0104-source-debian-11:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Debian 11 images adhere to canonical image source."
+scs-0104-source-debian-12:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Debian 12 images adhere to canonical image source."
+scs-0104-source-debian-13:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Debian 13 images adhere to canonical image source."
+scs-0104-source-ubuntu:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Ubuntu images adhere to canonical image source."
+scs-0104-source-ubuntu-2004:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Ubuntu 20.04 images adhere to canonical image source."
+scs-0104-source-ubuntu-2204:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Ubuntu 22.04 images adhere to canonical image source."
+scs-0104-source-ubuntu-2404:
+  url: https://docs.scs.community/standards/scs-0104-w1-standard-images-implementation#automated-tests
+  description: "Ubuntu 24.04 images adhere to canonical image source."
+scs-0114-encrypted-type:
+  url: https://docs.scs.community/standards/scs-0114-w1-volume-type-implementation#automated-tests
+  description: "An encrypted volume type can be discovered."
+scs-0114-replicated-type:
+  url: https://docs.scs.community/standards/scs-0114-w1-volume-type-implementation#automated-tests
+  description: "A replicated volume type can be discovered."
+scs-0114-syntax-check:
+  url: https://docs.scs.community/standards/scs-0114-w1-volume-type-implementation#automated-tests
+  description: "Aspect list in volume type description, if present, is formatted according to the standard."
+scs-0115-default-rules:
+  url: https://docs.scs.community/standards/scs-0115-w1-security-groups-implementation#automated-tests
+  description: "Ensures that default security rules follow scs-0115-v1 requirements."
+scs-0116-permissions:
+  url: https://docs.scs.community/standards/scs-0116-w1-key-manager-implementation-testing#automated-tests
+  description: "Key manager (if present) is usable with member role."
+scs-0116-presence:
+  url: https://docs.scs.community/standards/scs-0116-w1-key-manager-implementation-testing#automated-tests
+  description: "Key manager service is discoverable."
+scs-0117-test-backup:
+  url: https://docs.scs.community/standards/scs-0117-w1-volume-backup-service-implementation#automated-tests
+  description: "Check that volume backup works."
+scs-0123-service-compute:
+  url: https://docs.scs.community/standards/scs-0123-w1-mandatory-and-supported-IaaS-services-implementation#automated-tests
+  description: "Compute service is discoverable."
+scs-0123-service-identity:
+  url: https://docs.scs.community/standards/scs-0123-w1-mandatory-and-supported-IaaS-services-implementation#automated-tests
+  description: "Identity service is discoverable."
+scs-0123-service-image:
+  url: https://docs.scs.community/standards/scs-0123-w1-mandatory-and-supported-IaaS-services-implementation#automated-tests
+  description: "Image service is discoverable."
+scs-0123-service-load-balancer:
+  url: https://docs.scs.community/standards/scs-0123-w1-mandatory-and-supported-IaaS-services-implementation#automated-tests
+  description: "Load-balancer service is discoverable."
+scs-0123-service-network:
+  url: https://docs.scs.community/standards/scs-0123-w1-mandatory-and-supported-IaaS-services-implementation#automated-tests
+  description: "Network service is discoverable."
+scs-0123-service-placement:
+  url: https://docs.scs.community/standards/scs-0123-w1-mandatory-and-supported-IaaS-services-implementation#automated-tests
+  description: "Placement service is discoverable."
+scs-0123-service-s3:
+  url: https://docs.scs.community/standards/scs-0123-w1-mandatory-and-supported-IaaS-services-implementation#automated-tests
+  description: "s3 service is discoverable."
+scs-0123-storage-apis:
+  url: https://docs.scs.community/standards/scs-0123-w1-mandatory-and-supported-IaaS-services-implementation#automated-tests
+  description: "The block-storage API is discoverable as `volume`, `volumev3`, or `block-storage`."
+scs-0123-swift-s3:
+  url: https://docs.scs.community/standards/scs-0123-w1-mandatory-and-supported-IaaS-services-implementation#automated-tests
+  description: "The object-storage API is compatible with S3."
+version-policy-check:
+  url: https://docs.scs.community/standards/scs-0210-v2-k8s-version-policy#decision
+  description: "Must fulfill all requirements of scs-0210-v2."

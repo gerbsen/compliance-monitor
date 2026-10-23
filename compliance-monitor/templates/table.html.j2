@@ -1,0 +1,91 @@
+{#
+HTML version of overview.md.j2; the environments are listed in environments.yaml
+-#}
+{% set results = scores | prune_old_attestations('day') %}
+{% set total = namespace(n=0) -%}
+<div class="hero"><div class="inner">
+  <p class="eyebrow">Certification &amp; Compliance</p>
+  <h1>{{ title }}</h1>
+</div></div>
+<main class="inner">
+  <div class="stats">
+  {%- for section in environments %}
+    {%- set count = namespace(n=0, passing=0) %}
+    {%- for table in section.tables %}{% for row in table.rows %}
+      {%- set count.n = count.n + 1 %}
+      {%- if (results[row.subject][row.object] or {}).predicate == 'pass' %}{% set count.passing = count.passing + 1 %}{% endif %}
+    {%- endfor %}{% endfor %}
+    {%- set total.n = total.n + count.n %}
+    <div class="stat">
+      <div class="n">{{ count.passing }} <small>/ {{ count.n }} passing</small></div><div class="l">{{ section.title }}</div>
+    </div>
+  {%- endfor %}
+    <div class="stat"><div class="n">{{ total.n }}</div><div class="l">Environments listed in total</div></div>
+  </div>
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="Filter by name, operator, description…" aria-label="Filter environments">
+    <div class="legend">
+      <span><span class="badge ok">v6</span> passing</span>
+      <span><span class="badge fail">–</span> not passing</span>
+      <span><span class="badge na">–</span> missing or outdated</span>
+    </div>
+  </div>
+{% for section in environments %}
+<section>
+  <div class="section-head">
+    {%- if section.logo %}
+    <img src="{{ section.logo }}" alt="{{ section.title }} badge" width="96" height="96">
+    {%- endif %}
+    <div>
+      <h2>{{ section.title }}</h2>
+      {{ section.intro | markdown }}
+    </div>
+  </div>
+  {%- for table in section.tables %}
+  {%- set count = 'regions' if table.rows | selectattr('regions', 'defined') | first else 'configurations' if table.rows | selectattr('configurations', 'defined') | first %}
+  <div class="card">
+    <table>
+      <thead><tr><th>Name</th><th>Description</th>{% if count %}<th class="c">{{ count | capitalize }}</th>{% endif %}<th>Operator</th><th>{{ table.scope }}</th>{% if table.healthmon %}<th class="c">HealthMon</th>{% endif %}</tr></thead>
+      <tbody>
+      {%- for row in table.rows %}
+        {%- set a = results[row.subject][row.object] or {} %}
+        <tr>
+          <td class="name" data-label="Name"><a href="{{ row.url }}">{{ row.name | e }}</a></td>
+          <td data-label="Description">{{ row.description | markdown }}</td>
+          {%- if count %}
+          <td class="c" data-label="{{ count | capitalize }}">{{ row[count] }}</td>
+          {%- endif %}
+          <td class="op" data-label="Operator">{{ row.operator | e }}</td>
+          <td data-label="{{ table.scope }}"><a class="badge {{ {'pass': 'ok', 'fail': 'fail'}.get(a.predicate, 'na') }}" href="{{ detail_url(row.subject, row.object) }}">{{ row.object.rsplit('-', 1)[-1] if a.predicate == 'pass' else '–' }}</a></td>
+          {%- if table.healthmon %}
+          <td class="c" data-label="HealthMon">
+            {%- if row.healthmon is mapping %}<span class="hm">{% for label, url in row.healthmon.items() %}<a href="{{ url | e }}">{{ label }}</a>{% endfor %}</span>
+            {%- else %}<span class="muted">{{ row.healthmon }}</span>{% endif %}</td>
+          {%- endif %}
+        </tr>
+      {%- endfor %}
+      </tbody>
+    </table>
+    <div class="empty">No matching environments.</div>
+  </div>
+  {%- endfor %}
+</section>
+{% endfor %}
+</main>
+<script>
+  (function () {
+    var q = document.getElementById('q');
+    q.addEventListener('input', function () {
+      var term = q.value.trim().toLowerCase();
+      document.querySelectorAll('.card').forEach(function (card) {
+        var shown = 0;
+        card.querySelectorAll('tbody tr').forEach(function (tr) {
+          var hit = !term || tr.textContent.toLowerCase().indexOf(term) !== -1;
+          tr.style.display = hit ? '' : 'none';
+          if (hit) shown++;
+        });
+        card.querySelector('.empty').style.display = shown ? 'none' : 'block';
+      });
+    });
+  })();
+</script>

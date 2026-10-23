@@ -90,12 +90,12 @@ class ViewType(Enum):
 
 VIEW_REPORT = {
     ViewType.markdown: 'report.md',
-    ViewType.fragment: 'report.md',
+    ViewType.fragment: 'report.html',
     ViewType.page: 'overview.html',
 }
 VIEW_TABLE = {
     ViewType.markdown: 'overview.md',
-    ViewType.fragment: 'overview.md',
+    ViewType.fragment: 'table.html',
     ViewType.page: 'overview.html',
 }
 REQUIRED_TEMPLATES = tuple(set(fn for view in (VIEW_REPORT, VIEW_TABLE) for fn in view.values()))
@@ -115,7 +115,9 @@ env = Environment()  # populate this on startup (final section of this file)
 templates_map = {
     k: None for k in REQUIRED_TEMPLATES
 }
-environments = []  # populate this on startup as well (see templates/environments.yaml)
+# populate these on startup as well (see templates/environments.yaml and templates/testcases.yaml)
+environments = []
+testcases = {}
 
 
 class TimestampEncoder(json.JSONEncoder):
@@ -428,11 +430,13 @@ def render_view(view, view_type, detail_page='detail', base_url='/', title=None,
         stage1 = view[ViewType.fragment]
     def detail_url(subject, object_): return f"{base_url}page/{detail_page}/{subject}/{object_}"  # noqa: E306,E704
     def report_url(report, *args, **kwargs): return _build_report_url(base_url, report, *args, **kwargs)  # noqa: E306,E704
-    fragment = templates_map[stage1].render(base_url=base_url, detail_url=detail_url, report_url=report_url, **kwargs)
+    fragment = templates_map[stage1].render(
+        base_url=base_url, detail_url=detail_url, report_url=report_url, title=title, **kwargs,
+    )
     if view_type != ViewType.markdown and stage1.endswith('.md'):
         fragment = markdown(fragment, extensions=['extra'])
     if stage1 != stage2:
-        fragment = templates_map[stage2].render(fragment=fragment, title=title)
+        fragment = templates_map[stage2].render(fragment=fragment, title=title, base_url=base_url)
     return Response(content=fragment, media_type=media_type)
 
 
@@ -477,6 +481,31 @@ def _augment_report(report):
             attachment['_attestation'] = a
 
 
+def _subject_sort_key(subject):
+    """sort subjects alphabetically, but versioned ones (e.g., Kubernetes: syself-1.36) newest first"""
+    prefix, _, version = subject.rpartition('-')
+    parts = version.split('.')
+    if prefix and all(part.isdigit() for part in parts):
+        return prefix, [-int(part) for part in parts]
+    return subject, []
+
+
+def _group_attachments(report):
+    """for each attachment, group the attestations by subject and standard (e.g., scs-0100)"""
+    for attachment in report.get('attachments', {}).values():
+        if not attachment.get('_attestation'):
+            continue
+        groups = defaultdict(lambda: defaultdict(list))
+        for pred in ('fail', 'miss', 'dnf', 'pass'):
+            for a in attachment.get(pred, ()):
+                standard = a['object'][:8] if a['object'].startswith('scs-') else ''
+                groups[a['subject']][standard].append(a)
+        attachment['_groups'] = {
+            subject: dict(sorted(standards.items(), key=lambda item: (not item[0], item[0])))
+            for subject, standards in sorted(groups.items(), key=lambda item: _subject_sort_key(item[0]))
+        }
+
+
 @app.get("/{view_type}/report/{report_uuid}")
 async def get_report_view(
     request: Request,
@@ -494,6 +523,7 @@ def _make_report_view(conn, view_type, report_uuid, account=None):
         raise HTTPException(status_code=404)
     report = reports[0]
     _augment_report(report)
+    _group_attachments(report)
     title = f'Report {report_uuid}'
     if account is None:
         _redact_report(report)
@@ -506,7 +536,7 @@ def _make_report_view(conn, view_type, report_uuid, account=None):
         title += ' (full)'
     return render_view(
         VIEW_REPORT, view_type, report=report, base_url=settings.base_url,
-        title=title,
+        title=title, testcases=testcases,
     )
 
 
@@ -661,6 +691,8 @@ def reload_static_config(*args, do_ensure_schema=False):
     logger.info("loading static config")
     import_templates(settings.template_path, env=env, templates=templates_map)
     environments[:] = import_yaml(settings.template_path, 'environments.yaml')
+    testcases.clear()
+    testcases.update(import_yaml(settings.template_path, 'testcases.yaml'))
     validate_templates(templates=templates_map)
     with mk_conn(settings=settings) as conn:
         if do_ensure_schema:

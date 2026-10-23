@@ -1,5 +1,5 @@
 {#
-the environments are listed in environments.yaml
+the environments are listed in environments.yaml (which is also used by table.html.j2)
 -#}
 {% set results = scores | prune_old_attestations('day') %}
 {% for section in environments %}
@@ -7,10 +7,11 @@ the environments are listed in environments.yaml
 
 {{ section.intro }}
 {% for table in section.tables %}
-| Name  | Description  | Operator  | {{ table.scope }}  |{% if table.healthmon %} HealthMon  |{% endif %}
-|-------|--------------|-----------|----------------------|{% if table.healthmon %}:----------:|{% endif %}
+{%- set count = 'regions' if table.rows | selectattr('regions', 'defined') | first else 'configurations' if table.rows | selectattr('configurations', 'defined') | first %}
+| Name  | Description  |{% if count %} {{ count | capitalize }}  |{% endif %} Operator  | {{ table.scope }}  |{% if table.healthmon %} HealthMon  |{% endif %}
+|-------|--------------|{% if count %}:----------:|{% endif %}-----------|----------------------|{% if table.healthmon %}:----------:|{% endif %}
 {% for row in table.rows -%}
-| [{{ row.name }}]({{ row.url }}) | {{ row.description }} | {{ row.operator }} |
+| [{{ row.name }}]({{ row.url }}) | {{ row.description }} |{% if count %} {{ row[count] }} |{% endif %} {{ row.operator }} |
 {#- #} [{{ results[row.subject][row.object] | summary }} {{ row.object.rsplit('-', 1)[-1] }}]({{ detail_url(row.subject, row.object) }}) |
 {%- if table.healthmon %} {% if row.healthmon is mapping %}{% for label, url in row.healthmon.items() %}[{{ label }}]({{ url }}){{ ' ' if not loop.last }}{% endfor %}{% else %}{{ row.healthmon }}{% endif %} |{% endif %}
 {% endfor %}
